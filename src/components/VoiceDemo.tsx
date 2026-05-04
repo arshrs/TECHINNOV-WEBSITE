@@ -11,7 +11,7 @@ export default function VoiceDemo() {
   // Initialize Audio
   useEffect(() => {
     // Ensure this file exists in public/assets/
-    audioRef.current = new Audio("/re/assets/call_demo.mp3");
+    audioRef.current = new Audio("/assets/call_demo.mp3");
 
     return () => {
       if (audioRef.current) {

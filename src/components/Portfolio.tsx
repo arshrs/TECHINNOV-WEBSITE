@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { OptimizedImage } from "./OptimizedImage";
@@ -78,28 +78,9 @@ const portfolioData: PortfolioItem[] = [
 ];
 
 export function Portfolio() {
-  const [filter, setFilter] = useState<string>("All");
-  const [filteredProjects, setFilteredProjects] =
-    useState<PortfolioItem[]>(portfolioData);
 
-  const categories = [
-    "All",
-    "Web Development",
-    "Custom Software",
-    "Mobile App",
-  ];
 
-  useEffect(() => {
-    if (filter === "All") {
-      setFilteredProjects(portfolioData);
-    } else {
-      setFilteredProjects(
-        portfolioData.filter(
-          (item) => item.category === filter,
-        ),
-      );
-    }
-  }, [filter]);
+
 
   return (
     <section
@@ -127,32 +108,11 @@ export function Portfolio() {
           </p>
         </motion.div>
 
-        {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-3 mb-12 sm:mb-16"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setFilter(category)}
-              className={`px-6 py-3 rounded-full transition-all duration-300 ${
-                filter === category
-                  ? "bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/25"
-                  : "bg-white text-slate-700 border border-slate-200 hover:border-[#0066FF] hover:text-[#0066FF]"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </motion.div>
+
 
         {/* Portfolio Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
+          {portfolioData.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
@@ -239,14 +199,7 @@ export function Portfolio() {
           ))}
         </div>
 
-        {/* Empty State */}
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-slate-600 text-xl">
-              No projects found in this category
-            </p>
-          </div>
-        )}
+
 
         {/* CTA */}
         <motion.div

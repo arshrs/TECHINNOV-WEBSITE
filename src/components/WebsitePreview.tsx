@@ -1,11 +1,20 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function WebsitePreview() {
 
-  // Scroll Reveal Logic
+  // 1. STATE: Controls when to load the heavy website
+  const [showPreview, setShowPreview] = useState(false);
+
   useEffect(() => {
+    // 2. DELAY: Wait 2.5 seconds (2500ms) after page load
+    // This allows the rest of your site to load instantly first.
+    const timer = setTimeout(() => {
+      setShowPreview(true);
+    }, 2500);
+
+    // Scroll Reveal Logic (Existing)
     const reveal = () => {
       const reveals = document.querySelectorAll(".reveal");
       for (let i = 0; i < reveals.length; i++) {
@@ -19,7 +28,11 @@ export default function WebsitePreview() {
     };
     window.addEventListener("scroll", reveal);
     reveal();
-    return () => window.removeEventListener("scroll", reveal);
+
+    return () => {
+      window.removeEventListener("scroll", reveal);
+      clearTimeout(timer); // Cleanup timer if user leaves early
+    };
   }, []);
 
   return (
@@ -146,6 +159,10 @@ export default function WebsitePreview() {
             justify-content: space-between; 
             flex-shrink: 0;
         }
+        
+        /* Fade In Animation for Iframe */
+        .fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         /* --- MOBILE OPTIMIZATIONS --- */
         @media (max-width: 1200px) {
@@ -262,14 +279,26 @@ export default function WebsitePreview() {
               <a href="https://citizen-properties.lovable.app/" target="_blank" style={{ fontSize: '11px', fontWeight: 800, background: '#2563eb', color: 'white', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', boxShadow: '0 4px 6px -1px rgba(37,99,235,0.2)' }}>OPEN LIVE ↗</a>
             </div>
 
-            {/* Content */}
+            {/* Content Area */}
             <div style={{ flex: 1, width: '100%', position: 'relative', backgroundColor: 'white' }}>
-              <iframe
-                src="https://citizen-properties.lovable.app/"
-                style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-                loading="lazy"
-                title="Website Preview"
-              ></iframe>
+
+              {/* 3. CONDITIONAL RENDERING: Only show Iframe if showPreview is true */}
+              {showPreview ? (
+                <iframe
+                  src="https://citizen-properties.lovable.app/"
+                  className="fade-in"
+                  style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+                  loading="lazy"
+                  title="Website Preview"
+                ></iframe>
+              ) : (
+                /* 4. LOADING STATE: Shows instantly while waiting for timer */
+                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
+                  <div style={{ width: '40px', height: '40px', border: '4px solid #cbd5e1', borderTop: '4px solid #3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                  <p style={{ marginTop: '1rem', color: '#64748b', fontWeight: '600', fontSize: '0.9rem' }}>Initializing Live Preview...</p>
+                  <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                </div>
+              )}
             </div>
           </div>
 
